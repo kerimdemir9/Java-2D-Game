@@ -1,5 +1,6 @@
 package com.game;
 
+import com.game.object.BootsObject;
 import com.game.object.ChestObject;
 import com.game.object.DoorObject;
 import com.game.object.KeyObject;
@@ -41,5 +42,8 @@ public class AssetSetter {
         this.gamePanel.getObjects()[6].setWorldX(10 * this.gamePanel.getTileSize());
         this.gamePanel.getObjects()[6].setWorldY(7 * this.gamePanel.getTileSize());
 
+        this.gamePanel.getObjects()[7] = new BootsObject();
+        this.gamePanel.getObjects()[7].setWorldX(37 * this.gamePanel.getTileSize());
+        this.gamePanel.getObjects()[7].setWorldY(42 * this.gamePanel.getTileSize());
     }
 }

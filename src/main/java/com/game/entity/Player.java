@@ -28,8 +28,7 @@ public class Player extends Entity {
     int screenX;
     int screenY;
 
-    int keyCounter = 0;
-
+    int keyCounter;
 
     public Player(GamePanel gamePanel, KeyBoardInput keyBoardInput) {
         this.gamePanel = gamePanel;
@@ -53,6 +52,7 @@ public class Player extends Entity {
         this.worldX = this.gamePanel.getTileSize() * 23;
         this.worldY = this.gamePanel.getTileSize() * 21;
         this.speed = 4;
+        this.keyCounter = 0;
         this.direction = "down";
     }
 
@@ -125,13 +125,30 @@ public class Player extends Entity {
             switch (objectName) {
                 case "Key":
                     this.gamePanel.getObjects()[index] = null;
+                    this.gamePanel.playSoundEffect(1);
                     keyCounter++;
+                    this.gamePanel.getUi().showMessage("You got a key!");
                     break;
                 case "Door":
                     if (keyCounter > 0) {
                         this.gamePanel.getObjects()[index] = null;
+                        this.gamePanel.playSoundEffect(3);
                         keyCounter--;
+                        this.gamePanel.getUi().showMessage("You opened a door!");
+                    } else {
+                        this.gamePanel.getUi().showMessage("You need a key!");
                     }
+                    break;
+                case "Boots":
+                    this.gamePanel.getObjects()[index] = null;
+                    this.gamePanel.playSoundEffect(2);
+                    this.speed += 2;
+                    this.gamePanel.getUi().showMessage("You got speed up!");
+                    break;
+                case "Chest":
+                    this.gamePanel.getUi().setGameOver(true);
+                    this.gamePanel.stopMusic();
+                    this.gamePanel.playSoundEffect(4);
                     break;
                 default:
                     break;
@@ -176,6 +193,7 @@ public class Player extends Entity {
                 }
                 break;
         }
-        g2d.drawImage(image, this.screenX, this.screenY, this.gamePanel.getTileSize(), this.gamePanel.getTileSize(), null);
+        g2d.drawImage(image, this.screenX, this.screenY, this.gamePanel.getTileSize(), this.gamePanel.getTileSize(),
+                null);
     }
 }

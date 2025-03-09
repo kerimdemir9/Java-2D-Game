@@ -27,20 +27,23 @@ public class GamePanel extends JPanel implements Runnable {
     // WORLD SETTINGS
     final int maxWorldRow = 50;
     final int maxWorldColumn = 50;
-    final int worldWidth = tileSize * maxWorldColumn;
-    final int worldHeight = tileSize * maxWorldRow;
+    // final int worldWidth = tileSize * maxWorldColumn;
+    // final int worldHeight = tileSize * maxWorldRow;
 
     // FPS
     final int FPS = 60;
 
-    final KeyBoardInput keyBoardInputHandler = new KeyBoardInput();
     Thread gameThread;
+    final Sound music = new Sound();
+    final Sound soundEffect = new Sound();
+    final KeyBoardInput keyBoardInputHandler = new KeyBoardInput();
     final Player player = new Player(this, this.keyBoardInputHandler);
     final TileManager tileManager = new TileManager(this);
     final CollisionDetector collisionDetector = new CollisionDetector(this);
     final SuperObject objects[] = new SuperObject[10]; // max 10 object at the same time (key, door, chest, etc.)
-    final AssetSetter assetSetter = new AssetSetter(this); // creates the objects 
-    
+    final AssetSetter assetSetter = new AssetSetter(this); // creates the objects
+    final UI ui = new UI(this);
+
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.BLACK);
@@ -62,14 +65,35 @@ public class GamePanel extends JPanel implements Runnable {
             }
         });
     }
-    
+
+    public void playMusic(int musicIdx) {
+        this.music.setFile(musicIdx);
+        this.music.playSound();
+        this.music.loop();
+    }
+
+    public void stopMusic() {
+        this.music.stopSound();
+    }
+
+    public void playSoundEffect(int soundIdx) {
+        this.soundEffect.setFile(soundIdx);
+        this.soundEffect.playSound();
+    }
+
     public void setupWorld() {
         assetSetter.setObjects();
+
+        playMusic(0);
     }
 
     public void startGameThread() {
         gameThread = new Thread(this);
         gameThread.start();
+    }
+
+    public void stopGameThread() {
+        gameThread.stop();
     }
 
     public void update() {
@@ -83,16 +107,18 @@ public class GamePanel extends JPanel implements Runnable {
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        
+
         tileManager.draw(g2d);
-        
+
         for (SuperObject object : objects) {
             if (Objects.nonNull(object)) {
                 object.draw(g2d, this);
             }
         }
-        
+
         player.draw(g2d);
+
+        ui.draw(g2d);
 
         g2d.dispose();
     }
